@@ -3,38 +3,55 @@
 import { useState } from "react";
 import { judge, type SpecItem } from "@/lib/judge";
 import { saveSpec, approve, submitRequest } from "@/app/actions";
+import { card, input, btnPrimary, btnGhost, badgeLocked } from "@/lib/styles";
+import Stepper from "./Stepper";
 
 type Props = {
   token: string;
   project: any;
   items: SpecItem[];
   requests: any[];
+  approvals: any[];
   freeUsed: number;
 };
 
-export default function ClientView({ token, project, items, requests, freeUsed }: Props) {
+export default function ClientView({ token, project, items, requests, approvals, freeUsed }: Props) {
   const [target, setTarget] = useState<string>("");
   const undecided = items.filter((i) => !i.value.trim());
+  const step = undecided.length > 0 ? 0 : approvals.length === 0 ? 1 : 2;
 
   const selected = items.find((i) => i.id === target) ?? null;
   const preview = target === "" ? null : judge(selected, freeUsed, project);
 
   return (
     <main className="mx-auto max-w-2xl px-6 py-10">
-      <p className="text-sm text-neutral-500">{project.client_name || "클라이언트"} 님</p>
-      <h1 className="text-2xl font-bold">{project.title}</h1>
+      <div className="flex items-center justify-between gap-4">
+        <div>
+          <p className="text-sm text-neutral-500">{project.client_name || "클라이언트"} 님</p>
+          <h1 className="text-2xl font-bold tracking-tight">{project.title}</h1>
+        </div>
+        <span className="shrink-0 rounded-full bg-indigo-50 px-3 py-1 text-xs font-semibold text-indigo-700">
+          🔓 확정 잠금 진행 중
+        </span>
+      </div>
 
-      <section className="mt-8">
-        <h2 className="font-semibold">확정 항목</h2>
+      <div className="mt-6">
+        <Stepper step={step as 0 | 1 | 2} />
+      </div>
+
+      <section className={`mt-6 ${card}`}>
+        <h2 className="flex items-center gap-2 font-semibold">
+          <span className="text-lg">📋</span> 확정 항목
+        </h2>
         <p className="mt-1 text-sm text-neutral-500">
           잠긴 항목을 되돌리는 요청은 추가 비용이 발생합니다. 비어 있는 항목은
           아직 확정되지 않았으므로 나중에 무료로 바꿀 수 있습니다.
         </p>
 
         {undecided.length > 0 && (
-          <div className="mt-3 rounded-lg bg-amber-50 px-4 py-3 text-sm text-amber-900">
+          <div className="mt-3 rounded-xl bg-amber-50 px-4 py-3 text-sm text-amber-900">
             아직 <strong>{undecided.length}개</strong> 항목이 비어 있습니다. 모두
-            채워야 작업을 시작할 수 있습니다.
+            채워야 다음 단계로 넘어갑니다.
           </div>
         )}
 
@@ -44,7 +61,7 @@ export default function ClientView({ token, project, items, requests, freeUsed }
               <span className="mb-1 flex items-center gap-2 text-sm font-medium">
                 {i.label}
                 {i.locked_at && (
-                  <span className="rounded bg-neutral-900 px-1.5 py-0.5 text-[11px] font-normal text-white">
+                  <span className={badgeLocked}>
                     🔒 확정 · {new Date(i.locked_at).toLocaleDateString("ko-KR")}
                   </span>
                 )}
@@ -54,51 +71,50 @@ export default function ClientView({ token, project, items, requests, freeUsed }
                 defaultValue={i.value}
                 readOnly={!!i.locked_at}
                 placeholder="미확정"
-                className={`w-full rounded-lg border px-3 py-2 outline-none ${
+                className={`${input} ${
                   i.locked_at
                     ? "border-neutral-200 bg-neutral-100 text-neutral-500"
                     : i.value.trim()
-                      ? "border-neutral-300 focus:border-neutral-900"
-                      : "border-amber-400 bg-amber-50 focus:border-amber-600"
+                      ? ""
+                      : "border-amber-400 bg-amber-50 focus:border-amber-500 focus:ring-amber-100"
                 }`}
               />
             </label>
           ))}
-          <button className="rounded-lg border border-neutral-300 px-4 py-2 text-sm font-medium hover:bg-neutral-50">
-            저장
-          </button>
+          <button className={btnGhost}>변경사항 저장</button>
         </form>
       </section>
 
-      <section className="mt-10 rounded-xl border border-neutral-200 p-5">
-        <h2 className="font-semibold">단계 승인</h2>
+      <section className={`mt-6 ${card} border-indigo-100 bg-gradient-to-br from-indigo-50/60 to-white`}>
+        <h2 className="flex items-center gap-2 font-semibold">
+          <span className="text-lg">🔒</span> 단계 승인
+        </h2>
         <p className="mt-1 text-sm text-neutral-500">
           승인하면 지금 채워진 항목이 모두 잠깁니다. 이후 변경은 유상입니다.
         </p>
-        <form action={approve.bind(null, token)} className="mt-3 flex gap-2">
+        <form action={approve.bind(null, token)} className="mt-3 flex flex-wrap gap-2">
           <input
             name="stage"
             required
             placeholder="1차 검수"
-            className="flex-1 rounded-lg border border-neutral-300 px-3 py-2 outline-none focus:border-neutral-900"
+            className={`${input} flex-1 min-w-[10rem] bg-white`}
           />
-          <button
-            disabled={undecided.length > 0}
-            className="rounded-lg bg-neutral-900 px-4 py-2 text-sm font-medium text-white disabled:bg-neutral-300"
-          >
+          <button disabled={undecided.length > 0} className={btnPrimary}>
             승인하고 잠그기
           </button>
         </form>
       </section>
 
-      <section className="mt-10">
-        <h2 className="font-semibold">수정 요청</h2>
+      <section className={`mt-6 ${card}`}>
+        <h2 className="flex items-center gap-2 font-semibold">
+          <span className="text-lg">✏️</span> 수정 요청
+        </h2>
         <form action={submitRequest.bind(null, token)} className="mt-3 space-y-3">
           <select
             name="spec_item_id"
             value={target}
             onChange={(e) => setTarget(e.target.value)}
-            className="w-full rounded-lg border border-neutral-300 px-3 py-2 outline-none focus:border-neutral-900"
+            className={input}
           >
             <option value="" disabled>
               어떤 항목에 대한 요청인가요?
@@ -114,16 +130,16 @@ export default function ClientView({ token, project, items, requests, freeUsed }
 
           {preview && (
             <div
-              className={`rounded-lg px-4 py-3 text-sm ${
+              className={`animate-[fadeIn_0.2s_ease-out] rounded-xl border px-4 py-3 text-sm ${
                 preview.verdict === "paid"
-                  ? "bg-red-50 text-red-900"
-                  : "bg-emerald-50 text-emerald-900"
+                  ? "border-rose-200 bg-rose-50 text-rose-900"
+                  : "border-emerald-200 bg-emerald-50 text-emerald-900"
               }`}
             >
               <div className="font-semibold">
                 {preview.verdict === "paid"
-                  ? `추가 비용 +${preview.fee.toLocaleString("ko-KR")}원`
-                  : "무료 수정"}
+                  ? `⚠️ 추가 비용 +${preview.fee.toLocaleString("ko-KR")}원`
+                  : "✅ 무료 수정"}
               </div>
               <p className="mt-1 leading-relaxed">{preview.reason}</p>
             </div>
@@ -134,19 +150,17 @@ export default function ClientView({ token, project, items, requests, freeUsed }
             required
             rows={3}
             placeholder="요청 내용"
-            className="w-full rounded-lg border border-neutral-300 px-3 py-2 outline-none focus:border-neutral-900"
+            className={input}
           />
-          <button className="rounded-lg bg-neutral-900 px-4 py-2 text-sm font-medium text-white">
-            요청 보내기
-          </button>
+          <button className={btnPrimary}>요청 보내기</button>
         </form>
 
         <ul className="mt-6 space-y-2">
           {requests.map((r) => (
-            <li key={r.id} className="rounded-lg border border-neutral-200 px-4 py-3 text-sm">
+            <li key={r.id} className="rounded-xl border border-neutral-200 px-4 py-3 text-sm">
               <div className="flex justify-between gap-3">
                 <span>{r.body}</span>
-                <span className={r.verdict === "paid" ? "shrink-0 font-semibold text-red-600" : "shrink-0 text-emerald-600"}>
+                <span className={r.verdict === "paid" ? "shrink-0 font-semibold text-rose-600" : "shrink-0 font-semibold text-emerald-600"}>
                   {r.verdict === "paid" ? `+${r.fee.toLocaleString("ko-KR")}원` : "무료"}
                 </span>
               </div>
