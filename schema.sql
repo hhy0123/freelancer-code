@@ -23,6 +23,7 @@ create table spec_item (
   value text not null default '',        -- '' = 미확정
   locked_at timestamptz,                 -- not null = 잠금
   locked_by text,                        -- 잠근 승인 단계 이름
+  locked_by_role text,                   -- 'client' | 'owner' — 누가 잠갔는지 (판정 문구 근거)
   sort int not null default 0
 );
 
@@ -30,6 +31,7 @@ create table approval (
   id uuid primary key default gen_random_uuid(),
   project_id uuid not null references project(id) on delete cascade,
   stage text not null,
+  triggered_by text not null default 'client',  -- 'client' | 'owner'
   approved_at timestamptz not null default now()
 );
 
