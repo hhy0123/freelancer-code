@@ -1,5 +1,6 @@
 import { headers } from "next/headers";
 import QRCode from "qrcode";
+import { User, TriangleAlert, ClipboardList, Tag, Wallet, Bell, Lock, History } from "lucide-react";
 import type { SpecItem } from "@/lib/judge";
 import {
   pageTitle,
@@ -67,13 +68,13 @@ export default async function OwnerView({ token, project, items, requests, appro
           <p className="text-sm text-neutral-500">{project.client_name || "클라이언트"} · 작업자 화면</p>
           <h1 className={`text-2xl ${pageTitle}`}>{project.title}</h1>
         </div>
-        <span className="shrink-0 text-xs font-semibold uppercase tracking-wider text-blue-600">
-          👤 작업자
+        <span className="flex shrink-0 items-center gap-1 text-xs font-semibold uppercase tracking-wider text-blue-600">
+          <User className="h-3.5 w-3.5" /> 작업자
         </span>
       </div>
 
       <div className="mt-5 flex items-start gap-3 rounded-lg border border-neutral-200 bg-neutral-50 p-4 text-sm">
-        <span className="text-lg leading-none">⚠️</span>
+        <TriangleAlert className="h-5 w-5 shrink-0 text-blue-700" />
         <div className="flex-1">
           <p className="font-semibold text-blue-900">이 페이지 링크를 반드시 저장하세요</p>
           <p className="mt-0.5 text-neutral-600">
@@ -115,9 +116,9 @@ export default async function OwnerView({ token, project, items, requests, appro
       </div>
 
       <div className="mt-5 grid grid-cols-3 gap-3">
-        <Stat icon="📋" label="미확정 항목" value={`${undecided.length}개`} warn={undecided.length > 0} />
-        <Stat icon="🆓" label="무료 수정" value={`${freeUsed} / ${project.free_revisions}회`} />
-        <Stat icon="💰" label="추가 청구" value={`${total.toLocaleString("ko-KR")}원`} warn={total > 0} />
+        <Stat icon={ClipboardList} label="미확정 항목" value={`${undecided.length}개`} warn={undecided.length > 0} />
+        <Stat icon={Tag} label="무료 수정" value={`${freeUsed} / ${project.free_revisions}회`} />
+        <Stat icon={Wallet} label="추가 청구" value={`${total.toLocaleString("ko-KR")}원`} warn={total > 0} />
       </div>
 
       {undecided.length > 0 && (
@@ -142,7 +143,12 @@ export default async function OwnerView({ token, project, items, requests, appro
                 <span className="shrink-0 text-xs">
                   {i.locked_at ? (
                     <span className={badgeLocked}>
-                      {i.locked_by_role === "owner" ? "🔔" : "🔒"} {i.locked_by} ·{" "}
+                      {i.locked_by_role === "owner" ? (
+                        <Bell className="h-3 w-3" />
+                      ) : (
+                        <Lock className="h-3 w-3" />
+                      )}
+                      {i.locked_by} ·{" "}
                       {new Date(i.locked_at).toLocaleDateString("ko-KR")}
                     </span>
                   ) : i.value.trim() ? (
@@ -213,11 +219,13 @@ export default async function OwnerView({ token, project, items, requests, appro
                 <p className="text-xs text-neutral-400">{new Date(e.at).toLocaleString("ko-KR")}</p>
                 {e.kind === "approval" ? (
                   e.triggeredBy === "owner" ? (
-                    <p className="mt-0.5 text-sm font-medium">
-                      🔔 {e.stage} — 작업자가 사전에 확정해 고지함
+                    <p className="mt-0.5 flex items-center gap-1.5 text-sm font-medium">
+                      <Bell className="h-3.5 w-3.5 shrink-0 text-blue-500" /> {e.stage} — 작업자가 사전에 확정해 고지함
                     </p>
                   ) : (
-                    <p className="mt-0.5 text-sm font-medium">🔒 {e.stage} 승인 — 이 시점의 확정 항목이 전부 잠김</p>
+                    <p className="mt-0.5 flex items-center gap-1.5 text-sm font-medium">
+                      <Lock className="h-3.5 w-3.5 shrink-0 text-blue-900" /> {e.stage} 승인 — 이 시점의 확정 항목이 전부 잠김
+                    </p>
                   )
                 ) : (
                   <div className="mt-0.5 rounded-md border border-neutral-200 px-3 py-2">
@@ -251,10 +259,22 @@ export default async function OwnerView({ token, project, items, requests, appro
   );
 }
 
-function Stat({ icon, label, value, warn }: { icon: string; label: string; value: string; warn?: boolean }) {
+function Stat({
+  icon: Icon,
+  label,
+  value,
+  warn,
+}: {
+  icon: React.ComponentType<{ className?: string }>;
+  label: string;
+  value: string;
+  warn?: boolean;
+}) {
   return (
     <div className={`rounded-lg border p-4 ${warn ? "border-blue-300 bg-blue-50" : "border-neutral-200 bg-white"}`}>
-      <p className="text-xs text-neutral-500">{icon} {label}</p>
+      <p className="flex items-center gap-1 text-xs text-neutral-500">
+        <Icon className="h-3.5 w-3.5" /> {label}
+      </p>
       <p className="mt-1 text-lg font-semibold text-blue-900">{value}</p>
     </div>
   );

@@ -1,5 +1,6 @@
 import { headers } from "next/headers";
 import QRCode from "qrcode";
+import { Lock, User, UserCheck } from "lucide-react";
 import { createProject } from "./actions";
 import { PRESETS } from "@/lib/presets";
 import { pageTitle, scriptAccent, cardShell, cardTitleBar, cardBody, input, btnPrimary } from "@/lib/styles";
@@ -18,7 +19,9 @@ export default async function Home() {
   return (
     <main className="mx-auto max-w-2xl px-6 py-16">
       <div className="flex items-baseline justify-between">
-        <h1 className={`text-3xl ${pageTitle}`}>🔒 Fix</h1>
+        <h1 className={`flex items-center gap-2 text-3xl ${pageTitle}`}>
+          <Lock className="h-7 w-7" strokeWidth={2.5} /> Fix
+        </h1>
         <p className={`text-lg ${scriptAccent}`}>화면이 먼저 말해요</p>
       </div>
 
@@ -55,15 +58,25 @@ export default async function Home() {
       <div className={`mt-6 ${cardShell}`}>
         <p className={cardTitleBar}>진행 중인 프로젝트 보기</p>
         <div className={`${cardBody} grid grid-cols-2 gap-3`}>
-          <DemoLink href={`/p/${DEMO_OWNER}`} qr={ownerQr} icon="👤" label="작업자로 보기" />
-          <DemoLink href={`/p/${DEMO_CLIENT}`} qr={clientQr} icon="🙋" label="클라이언트로 보기" />
+          <DemoLink href={`/p/${DEMO_OWNER}`} qr={ownerQr} icon={User} label="작업자로 보기" />
+          <DemoLink href={`/p/${DEMO_CLIENT}`} qr={clientQr} icon={UserCheck} label="클라이언트로 보기" />
         </div>
       </div>
     </main>
   );
 }
 
-function DemoLink({ href, qr, icon, label }: { href: string; qr: string; icon: string; label: string }) {
+function DemoLink({
+  href,
+  qr,
+  icon: Icon,
+  label,
+}: {
+  href: string;
+  qr: string;
+  icon: React.ComponentType<{ className?: string }>;
+  label: string;
+}) {
   return (
     <a
       href={href}
@@ -73,7 +86,9 @@ function DemoLink({ href, qr, icon, label }: { href: string; qr: string; icon: s
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img src={qr} alt={`${label} QR 코드`} width={52} height={52} className="rounded border border-neutral-200" />
       <span>
-        <span className="block text-sm font-medium text-blue-900">{icon} {label}</span>
+        <span className="flex items-center gap-1.5 text-sm font-medium text-blue-900">
+          <Icon className="h-4 w-4 text-blue-600" /> {label}
+        </span>
         <span className="text-xs text-blue-600">클릭 또는 스캔 →</span>
       </span>
     </a>

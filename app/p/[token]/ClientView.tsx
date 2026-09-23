@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { Lock, LockOpen, Bell, TriangleAlert, CircleCheck } from "lucide-react";
 import { judge, type SpecItem } from "@/lib/judge";
 import { saveSpec, approve, submitRequest } from "@/app/actions";
 import {
@@ -43,8 +44,8 @@ export default function ClientView({ token, project, items, requests, approvals,
           <p className="text-sm text-neutral-500">{project.client_name || "클라이언트"} 님</p>
           <h1 className={`text-2xl ${pageTitle}`}>{project.title}</h1>
         </div>
-        <span className="shrink-0 text-xs font-semibold uppercase tracking-wider text-blue-600">
-          🔓 Fix 진행 중
+        <span className="flex shrink-0 items-center gap-1 text-xs font-semibold uppercase tracking-wider text-blue-600">
+          <LockOpen className="h-3.5 w-3.5" /> Fix 진행 중
         </span>
       </div>
 
@@ -76,7 +77,12 @@ export default function ClientView({ token, project, items, requests, approvals,
                   {i.label}
                   {i.locked_at && (
                     <span className={badgeLocked}>
-                      {i.locked_by_role === "owner" ? "🔔 작업자가 사전 확정" : "🔒 확정"} ·{" "}
+                      {i.locked_by_role === "owner" ? (
+                        <Bell className="h-3 w-3" />
+                      ) : (
+                        <Lock className="h-3 w-3" />
+                      )}
+                      {i.locked_by_role === "owner" ? "작업자가 사전 확정" : "확정"} ·{" "}
                       {new Date(i.locked_at).toLocaleDateString("ko-KR")}
                     </span>
                   )}
@@ -153,10 +159,16 @@ export default function ClientView({ token, project, items, requests, approvals,
                   preview.verdict === "paid" ? verdictPaid : verdictFree
                 }`}
               >
-                <div className="font-semibold">
-                  {preview.verdict === "paid"
-                    ? `⚠️ 추가 비용 +${preview.fee.toLocaleString("ko-KR")}원`
-                    : "✅ 무료 수정"}
+                <div className="flex items-center gap-1.5 font-semibold">
+                  {preview.verdict === "paid" ? (
+                    <>
+                      <TriangleAlert className="h-4 w-4" /> 추가 비용 +{preview.fee.toLocaleString("ko-KR")}원
+                    </>
+                  ) : (
+                    <>
+                      <CircleCheck className="h-4 w-4" /> 무료 수정
+                    </>
+                  )}
                 </div>
                 <p className="mt-1 leading-relaxed">{preview.reason}</p>
               </div>
