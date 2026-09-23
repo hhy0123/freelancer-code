@@ -37,7 +37,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       lang="ko"
       className={`${geistSans.variable} ${geistMono.variable} ${notoSerifKr.variable} ${nanumPenScript.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col bg-white text-black">{children}</body>
+      <body className="min-h-full flex flex-col bg-white text-blue-900">{children}</body>
     </html>
   );
 }

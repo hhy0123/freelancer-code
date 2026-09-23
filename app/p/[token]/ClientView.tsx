@@ -43,7 +43,7 @@ export default function ClientView({ token, project, items, requests, approvals,
           <p className="text-sm text-neutral-500">{project.client_name || "클라이언트"} 님</p>
           <h1 className={`text-2xl ${pageTitle}`}>{project.title}</h1>
         </div>
-        <span className="shrink-0 text-xs font-semibold uppercase tracking-wider text-mint-600">
+        <span className="shrink-0 text-xs font-semibold uppercase tracking-wider text-blue-600">
           🔓 확정 잠금 진행 중
         </span>
       </div>
@@ -64,7 +64,7 @@ export default function ClientView({ token, project, items, requests, approvals,
 
           {undecided.length > 0 && (
             <div className="mt-3 rounded-md border border-dashed border-neutral-300 bg-neutral-50 px-4 py-3 text-sm text-neutral-600">
-              아직 <strong className="font-medium text-black">{undecided.length}개</strong> 항목이 비어 있습니다. 모두
+              아직 <strong className="font-medium text-blue-900">{undecided.length}개</strong> 항목이 비어 있습니다. 모두
               채워야 다음 단계로 넘어갑니다.
             </div>
           )}
@@ -180,8 +180,8 @@ export default function ClientView({ token, project, items, requests, approvals,
                   <span
                     className={
                       r.verdict === "paid"
-                        ? "shrink-0 rounded-full bg-black px-2.5 py-0.5 text-xs font-semibold text-white"
-                        : "shrink-0 rounded-full border border-mint-300 bg-mint-50 px-2.5 py-0.5 text-xs font-semibold text-mint-700"
+                        ? "shrink-0 rounded-full bg-blue-900 px-2.5 py-0.5 text-xs font-semibold text-white"
+                        : "shrink-0 rounded-full border border-blue-300 bg-blue-50 px-2.5 py-0.5 text-xs font-semibold text-blue-700"
                     }
                   >
                     {r.verdict === "paid" ? `+${r.fee.toLocaleString("ko-KR")}원` : "무료"}

@@ -26,8 +26,8 @@ export default async function Home() {
         </p>
         <div className={cardBody}>
           <p className="text-sm text-neutral-600">
-            진행 중인 프로젝트를 <strong className="font-medium text-black">작업자</strong>와{" "}
-            <strong className="font-medium text-black">클라이언트</strong> 양쪽 입장에서
+            진행 중인 프로젝트를 <strong className="font-medium text-blue-900">작업자</strong>와{" "}
+            <strong className="font-medium text-blue-900">클라이언트</strong> 양쪽 입장에서
             미리 채워진 데이터로 둘러볼 수 있습니다. 이 도구는 둘 중 한쪽만을 위한 게 아닙니다.
           </p>
           <div className="mt-4 grid grid-cols-2 gap-3">
@@ -53,7 +53,7 @@ export default async function Home() {
           </p>
           <div className="mt-3 flex items-center justify-between rounded-md border border-neutral-200 bg-neutral-50 px-4 py-2.5 text-sm">
             <span className="text-neutral-600">“역시 IE11도 지원해주세요”</span>
-            <span className="rounded-full bg-black px-2.5 py-1 text-xs font-semibold text-white">
+            <span className="rounded-full bg-blue-900 px-2.5 py-1 text-xs font-semibold text-white">
               +50,000원
             </span>
           </div>
@@ -100,13 +100,13 @@ function DemoLink({ href, qr, icon, label }: { href: string; qr: string; icon: s
     <a
       href={href}
       target="_blank"
-      className="flex items-center gap-3 rounded-md border border-neutral-200 bg-white p-3 transition hover:border-mint-300 hover:bg-mint-50/50"
+      className="flex items-center gap-3 rounded-md border border-neutral-200 bg-white p-3 transition hover:border-blue-300 hover:bg-blue-50/50"
     >
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img src={qr} alt={`${label} QR 코드`} width={52} height={52} className="rounded border border-neutral-200" />
       <span>
-        <span className="block text-sm font-medium text-black">{icon} {label}</span>
-        <span className="text-xs text-mint-600">클릭 또는 스캔 →</span>
+        <span className="block text-sm font-medium text-blue-900">{icon} {label}</span>
+        <span className="text-xs text-blue-600">클릭 또는 스캔 →</span>
       </span>
     </a>
   );
@@ -116,7 +116,7 @@ function HowStep({ n, title, desc }: { n: number; title: string; desc: string })
   return (
     <li className="rounded-lg border border-neutral-200 bg-white p-4">
       <span className={`text-xl ${eyebrowNum}`}>0{n}</span>
-      <p className="mt-1.5 text-sm font-semibold text-black">{title}</p>
+      <p className="mt-1.5 text-sm font-semibold text-blue-900">{title}</p>
       <p className="mt-0.5 text-xs text-neutral-500">{desc}</p>
     </li>
   );

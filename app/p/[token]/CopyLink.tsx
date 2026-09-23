@@ -18,7 +18,7 @@ export default function CopyLink({ path }: { path: string }) {
         }
       }}
       className={`shrink-0 rounded-md border px-3 py-2 text-xs font-medium transition ${
-        copied ? "border-mint-300 bg-mint-50 text-mint-700" : "border-neutral-300 bg-white text-black hover:bg-neutral-50"
+        copied ? "border-blue-300 bg-blue-50 text-blue-700" : "border-neutral-300 bg-white text-blue-900 hover:bg-neutral-50"
       }`}
     >
       {copied ? "복사됨" : "복사"}

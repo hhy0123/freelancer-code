@@ -9,15 +9,15 @@ export default function Stepper({ step }: { step: 0 | 1 | 2 }) {
             <span
               className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-full text-[11px] font-semibold transition ${
                 i < step
-                  ? "bg-black text-white"
+                  ? "bg-blue-900 text-white"
                   : i === step
-                    ? "bg-mint-600 text-white"
+                    ? "bg-blue-600 text-white"
                     : "border border-neutral-300 text-neutral-400"
               }`}
             >
               {i < step ? "✓" : i + 1}
             </span>
-            <span className={`text-xs ${i === step ? "font-medium text-mint-700" : "text-neutral-400"}`}>
+            <span className={`text-xs ${i === step ? "font-medium text-blue-700" : "text-neutral-400"}`}>
               {label}
             </span>
           </div>
