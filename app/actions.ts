@@ -33,17 +33,14 @@ export async function createProject(fd: FormData) {
   redirect(`/p/${owner_token}`);
 }
 
-async function load(token: string) {
-  const { data: p } = await db
-    .from("project")
-    .select("*")
-    .or(`owner_token.eq.${token},client_token.eq.${token}`)
-    .maybeSingle();
+/** 확정·승인·요청은 클라이언트 링크로만 할 수 있다. 작업자 토큰은 조회 전용. */
+async function loadAsClient(token: string) {
+  const { data: p } = await db.from("project").select("*").eq("client_token", token).maybeSingle();
   return p;
 }
 
 export async function saveSpec(token: string, fd: FormData) {
-  const p = await load(token);
+  const p = await loadAsClient(token);
   if (!p) throw new Error("not found");
 
   const { data: items } = await db
@@ -62,7 +59,7 @@ export async function saveSpec(token: string, fd: FormData) {
 
 /** 승인 = 그 시점에 채워져 있는 항목 전부를 잠그는 행위 */
 export async function approve(token: string, fd: FormData) {
-  const p = await load(token);
+  const p = await loadAsClient(token);
   if (!p) throw new Error("not found");
   const stage = String(fd.get("stage") || "검수");
 
@@ -82,7 +79,7 @@ export async function approve(token: string, fd: FormData) {
 }
 
 export async function submitRequest(token: string, fd: FormData) {
-  const p = await load(token);
+  const p = await loadAsClient(token);
   if (!p) throw new Error("not found");
 
   const raw = String(fd.get("spec_item_id") || "");
