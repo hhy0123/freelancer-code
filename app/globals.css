@@ -4,6 +4,7 @@
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
   --font-serif: var(--font-serif-kr);
+  --font-script: var(--font-script-kr);
 }
 
 /* 레퍼런스(민트/화이트/블랙 레트로 위젯 UI)에서 뽑은 팔레트 */
@@ -24,6 +25,10 @@
 
 body {
   font-family: var(--font-sans), Arial, Helvetica, sans-serif;
+  /* 은은한 점무늬 텍스처 — 너무 밋밋해 보이지 않도록 하는 감성 포인트 */
+  background-image: radial-gradient(var(--color-mint-200) 1px, transparent 1px);
+  background-size: 22px 22px;
+  background-attachment: fixed;
 }
 
 @keyframes fadeIn {

@@ -10,6 +10,7 @@ import {
   cardBody,
   eyebrowNum,
   input,
+  textareaBox,
   btnPrimary,
   btnGhost,
   badgeLocked,
@@ -166,7 +167,7 @@ export default function ClientView({ token, project, items, requests, approvals,
               required
               rows={3}
               placeholder="요청 내용"
-              className={input}
+              className={textareaBox}
             />
             <button className={btnPrimary}>요청 보내기</button>
           </form>

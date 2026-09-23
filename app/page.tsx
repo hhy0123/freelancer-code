@@ -2,7 +2,7 @@ import { headers } from "next/headers";
 import QRCode from "qrcode";
 import { createProject } from "./actions";
 import { PRESETS } from "@/lib/presets";
-import { pageTitle, cardShell, cardTitleBar, cardBody, eyebrowNum, input, btnPrimary } from "@/lib/styles";
+import { pageTitle, scriptAccent, cardShell, cardTitleBar, cardBody, eyebrowNum, input, btnPrimary } from "@/lib/styles";
 
 const DEMO_OWNER = "11111111-1111-1111-1111-111111111111";
 const DEMO_CLIENT = "22222222-2222-2222-2222-222222222222";
@@ -23,6 +23,7 @@ export default async function Home() {
       <h1 className={`mt-3 text-4xl ${pageTitle}`}>
         어디까지가 계약 범위인가
       </h1>
+      <p className={`mt-1 text-xl ${scriptAccent}`}>사람이 말하지 않아도, 화면이 먼저 말해요</p>
       <p className="mt-4 leading-relaxed text-neutral-600">
         외주에서 돈을 못 받는 이유는 일을 못해서가 아니라, 어디까지가 일인지
         아무도 정하지 않아서입니다. 이 도구는 수정 횟수를 세지 않습니다.{" "}

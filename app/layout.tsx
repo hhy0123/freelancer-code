@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono, Noto_Serif_KR } from "next/font/google";
+import { Geist, Geist_Mono, Noto_Serif_KR, Nanum_Pen_Script } from "next/font/google";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -19,6 +19,13 @@ const notoSerifKr = Noto_Serif_KR({
   weight: ["500", "700"],
 });
 
+// 감성 포인트용 손글씨체 — 랜딩의 작은 포인트 문구에만 쓴다
+const nanumPenScript = Nanum_Pen_Script({
+  variable: "--font-script-kr",
+  subsets: ["latin"],
+  weight: "400",
+});
+
 export const metadata: Metadata = {
   title: "확정 잠금 — 외주 계약 범위 판정",
   description: "수정 횟수를 세지 않는다. 확정된 결정을 잠그고, 되돌리는 요청만 유상으로 판정한다.",
@@ -28,7 +35,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="ko"
-      className={`${geistSans.variable} ${geistMono.variable} ${notoSerifKr.variable} h-full antialiased`}
+      className={`${geistSans.variable} ${geistMono.variable} ${notoSerifKr.variable} ${nanumPenScript.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col bg-white text-black">{children}</body>
     </html>
