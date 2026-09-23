@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono, Noto_Serif_KR, Nanum_Pen_Script } from "next/font/google";
+import { Geist, Geist_Mono, Jua, Nanum_Pen_Script } from "next/font/google";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -12,11 +12,11 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-// 헤드라인 전용 세리프 — 본문은 계속 Geist Sans, 큰 제목만 격식 있게
-const notoSerifKr = Noto_Serif_KR({
+// 헤드라인 전용 둥글둥글한 폰트 — 본문은 계속 Geist Sans, 큰 제목만 귀엽게
+const jua = Jua({
   variable: "--font-serif-kr",
   subsets: ["latin"],
-  weight: ["500", "700"],
+  weight: "400",
 });
 
 // 감성 포인트용 손글씨체 — 랜딩의 작은 포인트 문구에만 쓴다
@@ -35,7 +35,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="ko"
-      className={`${geistSans.variable} ${geistMono.variable} ${notoSerifKr.variable} ${nanumPenScript.variable} h-full antialiased`}
+      className={`${geistSans.variable} ${geistMono.variable} ${jua.variable} ${nanumPenScript.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col bg-white text-blue-900">{children}</body>
     </html>

@@ -26,10 +26,35 @@
 
 body {
   font-family: var(--font-sans), Arial, Helvetica, sans-serif;
-  /* 은은한 점무늬 텍스처 — 너무 밋밋해 보이지 않도록 하는 감성 포인트 */
-  background-image: radial-gradient(var(--color-blue-200) 1px, transparent 1px);
-  background-size: 22px 22px;
-  background-attachment: fixed;
+  position: relative;
+}
+
+/* 점무늬 텍스처 — 화면 전체가 아니라 오른쪽 위 · 왼쪽 아래 대각선 모서리에만,
+   중심으로 갈수록 옅어지게. 점을 예전보다 두껍게(1.8px) 키움. */
+body::before,
+body::after {
+  content: "";
+  position: fixed;
+  width: min(46vw, 520px);
+  height: min(46vw, 520px);
+  background-image: radial-gradient(var(--color-blue-300) 1.8px, transparent 1.8px);
+  background-size: 24px 24px;
+  pointer-events: none;
+  z-index: -1;
+}
+
+body::before {
+  top: -60px;
+  right: -60px;
+  mask-image: radial-gradient(circle at top right, black, transparent 68%);
+  -webkit-mask-image: radial-gradient(circle at top right, black, transparent 68%);
+}
+
+body::after {
+  bottom: -60px;
+  left: -60px;
+  mask-image: radial-gradient(circle at bottom left, black, transparent 68%);
+  -webkit-mask-image: radial-gradient(circle at bottom left, black, transparent 68%);
 }
 
 @keyframes fadeIn {

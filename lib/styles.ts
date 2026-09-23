@@ -11,7 +11,7 @@ export const cardShell = "rounded-2xl border border-neutral-200 bg-white";
 /** 카드 상단의 작은 대문자 라벨 + 얇은 밑줄 */
 export const cardTitleBar =
   "flex items-center gap-2 border-b border-neutral-200 px-5 py-3 text-xs font-semibold uppercase tracking-[0.15em] text-blue-700";
-/** 섹션 번호("01" 등) 숫자 장식 — 세리프체로 라벨 앞에 붙임 */
+/** 섹션 번호("01" 등) 숫자 장식 — 둥근 헤드라인 폰트로 라벨 앞에 붙임 */
 export const eyebrowNum = "font-[family-name:var(--font-serif)] text-blue-400";
 export const cardBody = "p-6";
 
