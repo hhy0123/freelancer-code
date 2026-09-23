@@ -23,6 +23,18 @@ test("잠긴 항목 → 무료 횟수가 남아도 유상", () => {
   const v = judge(item({ locked_at: "2026-09-20T00:00:00Z", locked_by: "1차 검수" }), 0, P);
   assert.equal(v.verdict, "paid");
   assert.match(v.reason, /확정한 항목/);
+  assert.match(v.reason, /클라이언트가 직접/); // 클라이언트 승인으로 잠긴 경우 근거 문구가 그렇게 말해야 함
+});
+
+test("작업자가 사전 확정한 항목 → 유상이지만 근거 문구가 다름", () => {
+  const v = judge(
+    item({ locked_at: "2026-09-20T00:00:00Z", locked_by: "계약서 반영", locked_by_role: "owner" }),
+    0,
+    P
+  );
+  assert.equal(v.verdict, "paid");
+  assert.match(v.reason, /작업자가 사전에/);
+  assert.doesNotMatch(v.reason, /클라이언트가 직접/); // 클라이언트가 승인했다고 거짓 주장하면 안 됨
 });
 
 test("미확정 항목 → 횟수를 다 썼어도 무료", () => {

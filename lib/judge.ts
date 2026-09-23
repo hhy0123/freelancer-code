@@ -4,6 +4,7 @@ export type SpecItem = {
   value: string;
   locked_at: string | null;
   locked_by: string | null;
+  locked_by_role?: "client" | "owner" | null;
 };
 
 export type Verdict = {
@@ -34,12 +35,14 @@ export function judge(
       fee: p.change_fee,
     };
 
-  if (item.locked_at)
+  if (item.locked_at) {
+    const who = item.locked_by_role === "owner" ? "작업자가 사전에" : "클라이언트가 직접";
     return {
       verdict: "paid",
-      reason: `‘${item.label}’은(는) ${d(item.locked_at)} ${item.locked_by ?? "승인"} 단계에서 클라이언트가 직접 확정한 항목입니다. 확정된 결정을 되돌리는 요청입니다.`,
+      reason: `‘${item.label}’은(는) ${d(item.locked_at)} ${item.locked_by ?? "승인"} 단계에서 ${who} 확정한 항목입니다. 확정된 결정을 되돌리는 요청입니다.`,
       fee: p.change_fee,
     };
+  }
 
   if (!item.value.trim())
     return {

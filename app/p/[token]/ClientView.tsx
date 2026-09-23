@@ -62,7 +62,8 @@ export default function ClientView({ token, project, items, requests, approvals,
                 {i.label}
                 {i.locked_at && (
                   <span className={badgeLocked}>
-                    🔒 확정 · {new Date(i.locked_at).toLocaleDateString("ko-KR")}
+                    {i.locked_by_role === "owner" ? "🔔 작업자가 사전 확정" : "🔒 확정"} ·{" "}
+                    {new Date(i.locked_at).toLocaleDateString("ko-KR")}
                   </span>
                 )}
               </span>

@@ -39,6 +39,12 @@ async function loadAsClient(token: string) {
   return p;
 }
 
+/** 사전 확정(고지)은 작업자 링크로만 할 수 있다. */
+async function loadAsOwner(token: string) {
+  const { data: p } = await db.from("project").select("*").eq("owner_token", token).maybeSingle();
+  return p;
+}
+
 export async function saveSpec(token: string, fd: FormData) {
   const p = await loadAsClient(token);
   if (!p) throw new Error("not found");
@@ -63,7 +69,7 @@ export async function approve(token: string, fd: FormData) {
   if (!p) throw new Error("not found");
   const stage = String(fd.get("stage") || "검수");
 
-  await db.from("approval").insert({ project_id: p.id, stage });
+  await db.from("approval").insert({ project_id: p.id, stage, triggered_by: "client" });
   const { data: items } = await db
     .from("spec_item")
     .select("id, value, locked_at")
@@ -72,10 +78,57 @@ export async function approve(token: string, fd: FormData) {
   const now = new Date().toISOString();
   for (const it of items ?? []) {
     if (it.locked_at || !it.value.trim()) continue;
-    await db.from("spec_item").update({ locked_at: now, locked_by: stage }).eq("id", it.id);
+    await db
+      .from("spec_item")
+      .update({ locked_at: now, locked_by: stage, locked_by_role: "client" })
+      .eq("id", it.id);
   }
   await db.from("project").update({ started: true }).eq("id", p.id);
   revalidatePath(`/p/${token}`);
+}
+
+/**
+ * 작업자가 고객에게 링크를 보내기 전(또는 진행 중에도), 이미 계약서·대화로
+ * 합의된 항목을 스스로 채워 넣고 잠글 수 있다. 클라이언트의 승인 클릭을
+ * 대신하는 게 아니라, "이미 합의된 것을 시스템에 반영해 추가비를 미리
+ * 고지하는" 용도임을 판정 문구에서 명확히 구분한다 (locked_by_role: "owner").
+ */
+export async function ownerLock(token: string, fd: FormData) {
+  const p = await loadAsOwner(token);
+  if (!p) throw new Error("not found");
+  const stage = String(fd.get("stage") || "작업자 사전 확정").trim() || "작업자 사전 확정";
+
+  const { data: items } = await db
+    .from("spec_item")
+    .select("id, value, locked_at")
+    .eq("project_id", p.id);
+
+  const now = new Date().toISOString();
+  let lockedAny = false;
+  for (const it of items ?? []) {
+    if (it.locked_at) continue;
+
+    const rawValue = fd.get(`item_${it.id}`);
+    const value = rawValue === null ? it.value : String(rawValue);
+    const shouldLock = fd.get(`lock_${it.id}`) === "on";
+
+    if (rawValue !== null && rawValue !== it.value) {
+      await db.from("spec_item").update({ value }).eq("id", it.id);
+    }
+    if (shouldLock && value.trim()) {
+      await db
+        .from("spec_item")
+        .update({ locked_at: now, locked_by: stage, locked_by_role: "owner" })
+        .eq("id", it.id);
+      lockedAny = true;
+    }
+  }
+
+  if (lockedAny) {
+    await db.from("approval").insert({ project_id: p.id, stage, triggered_by: "owner" });
+  }
+  revalidatePath(`/p/${token}`);
+  revalidatePath(`/p/${p.client_token}`);
 }
 
 export async function submitRequest(token: string, fd: FormData) {
@@ -92,7 +145,7 @@ export async function submitRequest(token: string, fd: FormData) {
   if (itemId) {
     const { data } = await db
       .from("spec_item")
-      .select("id, label, value, locked_at, locked_by")
+      .select("id, label, value, locked_at, locked_by, locked_by_role")
       .eq("id", itemId)
       .eq("project_id", p.id)
       .maybeSingle();

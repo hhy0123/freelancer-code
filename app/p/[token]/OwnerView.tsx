@@ -1,6 +1,7 @@
 import type { SpecItem } from "@/lib/judge";
-import { card, badgeLocked, badgeWarn, badgeOk } from "@/lib/styles";
+import { card, input, btnPrimary, badgeLocked, badgeWarn, badgeOk } from "@/lib/styles";
 import CopyLink from "./CopyLink";
+import { ownerLock } from "@/app/actions";
 
 type Props = {
   token: string;
@@ -12,16 +13,23 @@ type Props = {
 };
 
 type TimelineEvent =
-  | { kind: "approval"; at: string; id: string; stage: string }
+  | { kind: "approval"; at: string; id: string; stage: string; triggeredBy: string }
   | { kind: "request"; at: string; id: string; body: string; verdict: string; reason: string; fee: number };
 
-export default function OwnerView({ project, items, requests, approvals, freeUsed }: Props) {
+export default function OwnerView({ token, project, items, requests, approvals, freeUsed }: Props) {
   const undecided = items.filter((i) => !i.value.trim());
+  const unlocked = items.filter((i) => !i.locked_at);
   const billed = requests.filter((r) => r.verdict === "paid");
   const total = billed.reduce((s, r) => s + r.fee, 0);
 
   const timeline: TimelineEvent[] = [
-    ...approvals.map((a) => ({ kind: "approval" as const, at: a.approved_at, id: a.id, stage: a.stage })),
+    ...approvals.map((a) => ({
+      kind: "approval" as const,
+      at: a.approved_at,
+      id: a.id,
+      stage: a.stage,
+      triggeredBy: a.triggered_by ?? "client",
+    })),
     ...requests.map((r) => ({
       kind: "request" as const,
       at: r.created_at,
@@ -105,7 +113,8 @@ export default function OwnerView({ project, items, requests, approvals, freeUse
               <span className="shrink-0 text-xs">
                 {i.locked_at ? (
                   <span className={badgeLocked}>
-                    🔒 {i.locked_by} · {new Date(i.locked_at).toLocaleDateString("ko-KR")}
+                    {i.locked_by_role === "owner" ? "🔔" : "🔒"} {i.locked_by} ·{" "}
+                    {new Date(i.locked_at).toLocaleDateString("ko-KR")}
                   </span>
                 ) : i.value.trim() ? (
                   <span className={badgeOk}>합의됨</span>
@@ -117,6 +126,35 @@ export default function OwnerView({ project, items, requests, approvals, freeUse
           ))}
         </ul>
       </section>
+
+      {unlocked.length > 0 && (
+        <section className={`mt-6 ${card} border-indigo-100 bg-gradient-to-br from-indigo-50/60 to-white`}>
+          <h2 className="flex items-center gap-2 font-semibold">
+            <span className="text-lg">🔔</span> 사전 확정 — 고객에게 보내기 전 고지
+          </h2>
+          <p className="mt-1 text-sm text-neutral-500">
+            이미 계약서나 대화로 합의된 항목이 있다면 직접 채워 넣고 잠글 수 있습니다.
+            클라이언트가 승인한 것이 아니라 <strong>작업자가 사전에 확정한 것</strong>임이
+            판정 문구에 그대로 남아 근거가 됩니다.
+          </p>
+          <form action={ownerLock.bind(null, token)} className="mt-4 space-y-3">
+            {unlocked.map((i) => (
+              <div key={i.id} className="flex items-start gap-2">
+                <label className="flex items-center gap-2 pt-2.5 text-xs text-neutral-500">
+                  <input type="checkbox" name={`lock_${i.id}`} className="h-4 w-4 accent-indigo-600" />
+                  잠금
+                </label>
+                <label className="flex-1">
+                  <span className="mb-1 block text-sm font-medium">{i.label}</span>
+                  <input name={`item_${i.id}`} defaultValue={i.value} placeholder="값을 입력하면 잠글 수 있습니다" className={input} />
+                </label>
+              </div>
+            ))}
+            <input name="stage" placeholder="사전 확정 사유 (예: 계약서 반영)" className={`${input} bg-white`} />
+            <button className={btnPrimary}>선택한 항목 잠그고 고지하기</button>
+          </form>
+        </section>
+      )}
 
       <section className={`mt-6 ${card}`}>
         <h2 className="flex items-center gap-2 font-semibold">
@@ -131,7 +169,9 @@ export default function OwnerView({ project, items, requests, approvals, freeUse
               <span
                 className={`absolute -left-[21px] top-1.5 h-2.5 w-2.5 rounded-full ${
                   e.kind === "approval"
-                    ? "bg-slate-900"
+                    ? e.triggeredBy === "owner"
+                      ? "bg-indigo-500"
+                      : "bg-slate-900"
                     : e.verdict === "paid"
                       ? "bg-rose-500"
                       : "bg-emerald-500"
@@ -139,7 +179,13 @@ export default function OwnerView({ project, items, requests, approvals, freeUse
               />
               <p className="text-xs text-neutral-400">{new Date(e.at).toLocaleString("ko-KR")}</p>
               {e.kind === "approval" ? (
-                <p className="mt-0.5 text-sm font-medium">🔒 {e.stage} 승인 — 이 시점의 확정 항목이 전부 잠김</p>
+                e.triggeredBy === "owner" ? (
+                  <p className="mt-0.5 text-sm font-medium">
+                    🔔 {e.stage} — 작업자가 사전에 확정해 고지함
+                  </p>
+                ) : (
+                  <p className="mt-0.5 text-sm font-medium">🔒 {e.stage} 승인 — 이 시점의 확정 항목이 전부 잠김</p>
+                )
               ) : (
                 <div className="mt-0.5 rounded-xl border border-neutral-200 px-3 py-2">
                   <div className="flex justify-between gap-3 text-sm">
