@@ -17,19 +17,8 @@ export default async function Home() {
 
   return (
     <main className="mx-auto max-w-2xl px-6 py-16">
-      <p className="text-xs font-semibold uppercase tracking-[0.2em] text-mint-600">
-        🔒 확정 잠금
-      </p>
-      <h1 className={`mt-3 text-4xl ${pageTitle}`}>
-        어디까지가 계약 범위인가
-      </h1>
+      <h1 className={`text-4xl ${pageTitle}`}>🔒 확정 잠금</h1>
       <p className={`mt-1 text-xl ${scriptAccent}`}>사람이 말하지 않아도, 화면이 먼저 말해요</p>
-      <p className="mt-4 leading-relaxed text-neutral-600">
-        외주에서 돈을 못 받는 이유는 일을 못해서가 아니라, 어디까지가 일인지
-        아무도 정하지 않아서입니다. 이 도구는 수정 횟수를 세지 않습니다.{" "}
-        <strong className="font-medium text-black">확정된 결정을 잠그고</strong>, 그
-        결정을 되돌리는 요청만 유상으로 판정합니다.
-      </p>
 
       <div className={`mt-10 ${cardShell}`}>
         <p className={cardTitleBar}>
