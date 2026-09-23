@@ -28,7 +28,7 @@ const nanumPenScript = Nanum_Pen_Script({
 
 export const metadata: Metadata = {
   title: "Fix — 외주 계약 범위 판정",
-  description: "수정 횟수를 세지 않는다. 확정된 결정을 잠그고, 되돌리는 요청만 유상으로 판정한다.",
+  description: "수정 횟수를 세지 않는다. 확정된 결정을 잠그고, 그걸 바꾸려는 요청에만 돈이 붙는다.",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

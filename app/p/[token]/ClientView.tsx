@@ -113,7 +113,7 @@ export default function ClientView({ token, project, items, requests, approvals,
         </p>
         <div className={cardBody}>
           <p className="text-sm text-neutral-500">
-            승인하면 지금 채워진 항목이 모두 잠깁니다. 이후 변경은 유상입니다.
+            승인하면 지금 채워진 항목이 모두 잠깁니다. 이후 바꾸려면 돈이 붙습니다.
           </p>
           <form action={approve.bind(null, token)} className="mt-3 flex flex-wrap gap-2">
             <input
