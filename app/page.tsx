@@ -1,8 +1,20 @@
+import { headers } from "next/headers";
+import QRCode from "qrcode";
 import { createProject } from "./actions";
 import { PRESETS } from "@/lib/presets";
 import { card, input, btnPrimary } from "@/lib/styles";
 
-export default function Home() {
+const DEMO_OWNER = "11111111-1111-1111-1111-111111111111";
+const DEMO_CLIENT = "22222222-2222-2222-2222-222222222222";
+
+export default async function Home() {
+  const h = await headers();
+  const base = `${h.get("x-forwarded-proto") ?? "http"}://${h.get("host")}`;
+  const [ownerQr, clientQr] = await Promise.all([
+    QRCode.toDataURL(`${base}/p/${DEMO_OWNER}`, { margin: 1, width: 160 }),
+    QRCode.toDataURL(`${base}/p/${DEMO_CLIENT}`, { margin: 1, width: 160 }),
+  ]);
+
   return (
     <main className="mx-auto max-w-2xl px-6 py-16">
       <span className="inline-flex items-center gap-1.5 rounded-full bg-indigo-50 px-3 py-1 text-xs font-semibold text-indigo-700">
@@ -17,6 +29,18 @@ export default function Home() {
         <strong className="text-neutral-900">확정된 결정을 잠그고</strong>, 그
         결정을 되돌리는 요청만 유상으로 판정합니다.
       </p>
+
+      <div className={`mt-8 ${card} border-indigo-100 bg-indigo-50/40`}>
+        <p className="text-xs font-semibold uppercase tracking-wide text-indigo-700">데모 바로 보기</p>
+        <p className="mt-1 text-sm text-neutral-600">
+          진행 중인 프로젝트를 <strong>작업자</strong>와 <strong>클라이언트</strong> 양쪽 입장에서
+          미리 채워진 데이터로 둘러볼 수 있습니다. 이 도구는 둘 중 한쪽만을 위한 게 아닙니다.
+        </p>
+        <div className="mt-4 grid grid-cols-2 gap-3">
+          <DemoLink href={`/p/${DEMO_OWNER}`} qr={ownerQr} icon="👤" label="작업자로 보기" />
+          <DemoLink href={`/p/${DEMO_CLIENT}`} qr={clientQr} icon="🙋" label="클라이언트로 보기" />
+        </div>
+      </div>
 
       <ol className="mt-8 grid gap-3 sm:grid-cols-3">
         <HowStep n={1} title="항목을 확정한다" desc="클라이언트가 체크리스트를 채운다" />
@@ -62,6 +86,23 @@ export default function Home() {
         </button>
       </form>
     </main>
+  );
+}
+
+function DemoLink({ href, qr, icon, label }: { href: string; qr: string; icon: string; label: string }) {
+  return (
+    <a
+      href={href}
+      target="_blank"
+      className="flex items-center gap-3 rounded-xl border border-neutral-200 bg-white p-3 shadow-sm transition hover:border-indigo-300 hover:shadow"
+    >
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img src={qr} alt={`${label} QR 코드`} width={56} height={56} className="rounded" />
+      <span>
+        <span className="block text-sm font-semibold">{icon} {label}</span>
+        <span className="text-xs text-indigo-600">클릭 또는 스캔 →</span>
+      </span>
+    </a>
   );
 }
 
