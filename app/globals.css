@@ -29,10 +29,12 @@ body {
   position: relative;
 }
 
-/* 점무늬 텍스처 — 화면 전체가 아니라 오른쪽 위 · 왼쪽 아래 대각선 모서리에만,
-   중심으로 갈수록 옅어지게. 점을 예전보다 두껍게(1.8px) 키움. */
+/* 점무늬 텍스처 — 네 귀퉁이 전부에서 시작해 안쪽(중심)으로 갈수록 옅어짐.
+   점 크기 1.8px. body와 html 각각의 ::before/::after로 귀퉁이 4개를 만든다. */
 body::before,
-body::after {
+body::after,
+:root::before,
+:root::after {
   content: "";
   position: fixed;
   width: min(46vw, 520px);
@@ -55,6 +57,20 @@ body::after {
   left: -60px;
   mask-image: radial-gradient(circle at bottom left, black, transparent 68%);
   -webkit-mask-image: radial-gradient(circle at bottom left, black, transparent 68%);
+}
+
+:root::before {
+  top: -60px;
+  left: -60px;
+  mask-image: radial-gradient(circle at top left, black, transparent 68%);
+  -webkit-mask-image: radial-gradient(circle at top left, black, transparent 68%);
+}
+
+:root::after {
+  bottom: -60px;
+  right: -60px;
+  mask-image: radial-gradient(circle at bottom right, black, transparent 68%);
+  -webkit-mask-image: radial-gradient(circle at bottom right, black, transparent 68%);
 }
 
 @keyframes fadeIn {
