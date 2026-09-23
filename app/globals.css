@@ -5,6 +5,17 @@
   --font-mono: var(--font-geist-mono);
 }
 
+/* 레퍼런스(민트/화이트/블랙 레트로 위젯 UI)에서 뽑은 팔레트 */
+@theme {
+  --color-mint-50: #f1faf6;
+  --color-mint-100: #dff3ea;
+  --color-mint-200: #c3e9d7;
+  --color-mint-300: #a3dcc0;
+  --color-mint-500: #62b696;
+  --color-mint-600: #4d9e80;
+  --color-mint-700: #3a7f66;
+}
+
 /* 시연 중 프로젝터가 시스템 다크모드를 물고 오는 걸 막기 위해 라이트 테마 고정 */
 :root {
   color-scheme: light;
