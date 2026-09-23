@@ -4,9 +4,11 @@ import { useState } from "react";
 import { judge, type SpecItem } from "@/lib/judge";
 import { saveSpec, approve, submitRequest } from "@/app/actions";
 import {
+  pageTitle,
   cardShell,
   cardTitleBar,
   cardBody,
+  eyebrowNum,
   input,
   btnPrimary,
   btnGhost,
@@ -38,9 +40,9 @@ export default function ClientView({ token, project, items, requests, approvals,
       <div className="flex items-center justify-between gap-4">
         <div>
           <p className="text-sm text-neutral-500">{project.client_name || "클라이언트"} 님</p>
-          <h1 className="text-2xl font-bold tracking-tight text-black">{project.title}</h1>
+          <h1 className={`text-2xl ${pageTitle}`}>{project.title}</h1>
         </div>
-        <span className="shrink-0 rounded-full border-2 border-black bg-mint-300 px-3 py-1 text-xs font-bold text-black">
+        <span className="shrink-0 text-xs font-semibold uppercase tracking-wider text-mint-600">
           🔓 확정 잠금 진행 중
         </span>
       </div>
@@ -50,7 +52,9 @@ export default function ClientView({ token, project, items, requests, approvals,
       </div>
 
       <section className={`mt-6 ${cardShell}`}>
-        <p className={cardTitleBar}>📋 확정 항목</p>
+        <p className={cardTitleBar}>
+          <span className={eyebrowNum}>01</span> 확정 항목
+        </p>
         <div className={cardBody}>
           <p className="text-sm text-neutral-500">
             잠긴 항목을 되돌리는 요청은 추가 비용이 발생합니다. 비어 있는 항목은
@@ -58,8 +62,8 @@ export default function ClientView({ token, project, items, requests, approvals,
           </p>
 
           {undecided.length > 0 && (
-            <div className="mt-3 rounded-xl border-2 border-dashed border-neutral-400 bg-neutral-50 px-4 py-3 text-sm text-neutral-700">
-              아직 <strong className="text-black">{undecided.length}개</strong> 항목이 비어 있습니다. 모두
+            <div className="mt-3 rounded-md border border-dashed border-neutral-300 bg-neutral-50 px-4 py-3 text-sm text-neutral-600">
+              아직 <strong className="font-medium text-black">{undecided.length}개</strong> 항목이 비어 있습니다. 모두
               채워야 다음 단계로 넘어갑니다.
             </div>
           )}
@@ -83,10 +87,10 @@ export default function ClientView({ token, project, items, requests, approvals,
                   placeholder="미확정"
                   className={`${input} ${
                     i.locked_at
-                      ? "border-neutral-300 bg-neutral-100 text-neutral-500"
+                      ? "border-neutral-200 bg-neutral-50 text-neutral-500"
                       : i.value.trim()
                         ? ""
-                        : "border-dashed border-neutral-400 bg-neutral-50"
+                        : "border-dashed border-neutral-300 bg-neutral-50"
                   }`}
                 />
               </label>
@@ -97,7 +101,9 @@ export default function ClientView({ token, project, items, requests, approvals,
       </section>
 
       <section className={`mt-6 ${cardShell}`}>
-        <p className={cardTitleBar}>🔒 단계 승인</p>
+        <p className={cardTitleBar}>
+          <span className={eyebrowNum}>02</span> 단계 승인
+        </p>
         <div className={cardBody}>
           <p className="text-sm text-neutral-500">
             승인하면 지금 채워진 항목이 모두 잠깁니다. 이후 변경은 유상입니다.
@@ -117,7 +123,9 @@ export default function ClientView({ token, project, items, requests, approvals,
       </section>
 
       <section className={`mt-6 ${cardShell}`}>
-        <p className={cardTitleBar}>✏️ 수정 요청</p>
+        <p className={cardTitleBar}>
+          <span className={eyebrowNum}>03</span> 수정 요청
+        </p>
         <div className={cardBody}>
           <form action={submitRequest.bind(null, token)} className="space-y-3">
             <select
@@ -140,7 +148,7 @@ export default function ClientView({ token, project, items, requests, approvals,
 
             {preview && (
               <div
-                className={`animate-[fadeIn_0.2s_ease-out] rounded-xl px-4 py-3 text-sm ${
+                className={`animate-[fadeIn_0.2s_ease-out] rounded-md px-4 py-3 text-sm ${
                   preview.verdict === "paid" ? verdictPaid : verdictFree
                 }`}
               >
@@ -163,16 +171,16 @@ export default function ClientView({ token, project, items, requests, approvals,
             <button className={btnPrimary}>요청 보내기</button>
           </form>
 
-          <ul className="mt-6 space-y-2">
+          <ul className="mt-6 divide-y divide-neutral-100">
             {requests.map((r) => (
-              <li key={r.id} className="rounded-xl border-2 border-black px-4 py-3 text-sm">
+              <li key={r.id} className="py-3 text-sm">
                 <div className="flex justify-between gap-3">
                   <span>{r.body}</span>
                   <span
                     className={
                       r.verdict === "paid"
-                        ? "shrink-0 rounded-md border-2 border-black bg-black px-2 py-0.5 text-xs font-semibold text-white"
-                        : "shrink-0 rounded-md border-2 border-mint-600 bg-mint-100 px-2 py-0.5 text-xs font-semibold text-mint-700"
+                        ? "shrink-0 rounded-full bg-black px-2.5 py-0.5 text-xs font-semibold text-white"
+                        : "shrink-0 rounded-full border border-mint-300 bg-mint-50 px-2.5 py-0.5 text-xs font-semibold text-mint-700"
                     }
                   >
                     {r.verdict === "paid" ? `+${r.fee.toLocaleString("ko-KR")}원` : "무료"}

@@ -1,7 +1,18 @@
 import { headers } from "next/headers";
 import QRCode from "qrcode";
 import type { SpecItem } from "@/lib/judge";
-import { cardShell, cardTitleBar, cardBody, input, btnPrimary, badgeLocked, badgeWarn, badgeOk } from "@/lib/styles";
+import {
+  pageTitle,
+  cardShell,
+  cardTitleBar,
+  cardBody,
+  eyebrowNum,
+  input,
+  btnPrimary,
+  badgeLocked,
+  badgeWarn,
+  badgeOk,
+} from "@/lib/styles";
 import CopyLink from "./CopyLink";
 import { ownerLock } from "@/app/actions";
 
@@ -54,14 +65,14 @@ export default async function OwnerView({ token, project, items, requests, appro
       <div className="flex items-center justify-between gap-4">
         <div>
           <p className="text-sm text-neutral-500">{project.client_name || "클라이언트"} · 작업자 화면</p>
-          <h1 className="text-2xl font-bold tracking-tight text-black">{project.title}</h1>
+          <h1 className={`text-2xl ${pageTitle}`}>{project.title}</h1>
         </div>
-        <span className="shrink-0 rounded-full border-2 border-black bg-mint-300 px-3 py-1 text-xs font-bold text-black">
+        <span className="shrink-0 text-xs font-semibold uppercase tracking-wider text-mint-600">
           👤 작업자
         </span>
       </div>
 
-      <div className="mt-5 flex items-start gap-3 rounded-2xl border-2 border-black bg-white p-4 text-sm shadow-[4px_4px_0_0_#000]">
+      <div className="mt-5 flex items-start gap-3 rounded-lg border border-neutral-200 bg-neutral-50 p-4 text-sm">
         <span className="text-lg leading-none">⚠️</span>
         <div className="flex-1">
           <p className="font-semibold text-black">이 페이지 링크를 반드시 저장하세요</p>
@@ -69,7 +80,7 @@ export default async function OwnerView({ token, project, items, requests, appro
             로그인이 없어서 이 URL을 잃어버리면 이 프로젝트로 다시 돌아올 방법이 없습니다.
           </p>
           <div className="mt-2 flex items-center gap-2">
-            <code className="flex-1 break-all rounded-lg border-2 border-black bg-mint-50 px-3 py-2 text-xs">
+            <code className="flex-1 break-all rounded-md border border-neutral-200 bg-white px-3 py-2 text-xs">
               /p/{project.owner_token}
             </code>
             <CopyLink path={`/p/${project.owner_token}`} />
@@ -82,7 +93,7 @@ export default async function OwnerView({ token, project, items, requests, appro
         <div className={`${cardBody} flex flex-col gap-4 sm:flex-row sm:items-start`}>
           <div className="flex-1">
             <div className="flex items-center gap-2">
-              <code className="flex-1 break-all rounded-lg bg-neutral-100 px-3 py-2 text-xs">
+              <code className="flex-1 break-all rounded-md bg-neutral-50 px-3 py-2 text-xs">
                 /p/{project.client_token}
               </code>
               <CopyLink path={`/p/${project.client_token}`} />
@@ -97,7 +108,7 @@ export default async function OwnerView({ token, project, items, requests, appro
           </div>
           <div className="flex shrink-0 flex-col items-center gap-1 self-center">
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={clientQr} alt="클라이언트 화면 QR 코드" width={110} height={110} className="rounded-lg border-2 border-black" />
+            <img src={clientQr} alt="클라이언트 화면 QR 코드" width={104} height={104} className="rounded-md border border-neutral-200" />
             <p className="text-[11px] text-neutral-400">스캔해서 바로 전달</p>
           </div>
         </div>
@@ -110,14 +121,16 @@ export default async function OwnerView({ token, project, items, requests, appro
       </div>
 
       {undecided.length > 0 && (
-        <p className="mt-3 rounded-xl border-2 border-dashed border-neutral-400 bg-neutral-50 px-4 py-3 text-sm text-neutral-700">
+        <p className="mt-3 rounded-md border border-dashed border-neutral-300 bg-neutral-50 px-4 py-3 text-sm text-neutral-600">
           미확정 항목이 남아 있습니다. 이 항목들은 나중에 클라이언트가 바꿔도
           무료입니다. 작업 시작 전에 채우게 하세요.
         </p>
       )}
 
       <section className={`mt-6 ${cardShell}`}>
-        <p className={cardTitleBar}>📋 확정 항목</p>
+        <p className={cardTitleBar}>
+          <span className={eyebrowNum}>01</span> 확정 항목
+        </p>
         <div className={cardBody}>
           <ul className="divide-y divide-neutral-100">
             {items.map((i) => (
@@ -146,11 +159,13 @@ export default async function OwnerView({ token, project, items, requests, appro
 
       {unlocked.length > 0 && (
         <section className={`mt-6 ${cardShell}`}>
-          <p className={cardTitleBar}>🔔 사전 확정 — 고객에게 보내기 전 고지</p>
+          <p className={cardTitleBar}>
+            <span className={eyebrowNum}>02</span> 사전 확정 — 고객에게 보내기 전 고지
+          </p>
           <div className={cardBody}>
             <p className="text-sm text-neutral-500">
               이미 계약서나 대화로 합의된 항목이 있다면 직접 채워 넣고 잠글 수 있습니다.
-              클라이언트가 승인한 것이 아니라 <strong className="text-black">작업자가 사전에 확정한 것</strong>임이
+              클라이언트가 승인한 것이 아니라 <strong className="font-medium text-black">작업자가 사전에 확정한 것</strong>임이
               판정 문구에 그대로 남아 근거가 됩니다.
             </p>
             <form action={ownerLock.bind(null, token)} className="mt-4 space-y-3">
@@ -174,16 +189,18 @@ export default async function OwnerView({ token, project, items, requests, appro
       )}
 
       <section className={`mt-6 ${cardShell}`}>
-        <p className={cardTitleBar}>🕐 결정 타임라인</p>
+        <p className={cardTitleBar}>
+          <span className={eyebrowNum}>03</span> 결정 타임라인
+        </p>
         <div className={cardBody}>
           <p className="text-sm text-neutral-500">
             승인과 요청이 시간 순서대로 쌓입니다. 나중에 &quot;그런 말 없었다&quot;는 분쟁이 나올 수 없습니다.
           </p>
-          <ol className="mt-4 space-y-3 border-l-2 border-neutral-200 pl-4">
+          <ol className="mt-4 space-y-3 border-l border-neutral-200 pl-4">
             {timeline.map((e) => (
               <li key={`${e.kind}-${e.id}`} className="relative">
                 <span
-                  className={`absolute -left-[21px] top-1.5 h-2.5 w-2.5 rounded-full border-2 border-white ${
+                  className={`absolute -left-[17px] top-1.5 h-2 w-2 rounded-full ring-2 ring-white ${
                     e.kind === "approval"
                       ? e.triggeredBy === "owner"
                         ? "bg-mint-500"
@@ -203,14 +220,14 @@ export default async function OwnerView({ token, project, items, requests, appro
                     <p className="mt-0.5 text-sm font-medium">🔒 {e.stage} 승인 — 이 시점의 확정 항목이 전부 잠김</p>
                   )
                 ) : (
-                  <div className="mt-0.5 rounded-xl border-2 border-black px-3 py-2">
+                  <div className="mt-0.5 rounded-md border border-neutral-200 px-3 py-2">
                     <div className="flex justify-between gap-3 text-sm">
                       <span>{e.body}</span>
                       <span
                         className={
                           e.verdict === "paid"
-                            ? "shrink-0 rounded-md border-2 border-black bg-black px-2 py-0.5 text-xs font-semibold text-white"
-                            : "shrink-0 rounded-md border-2 border-mint-600 bg-mint-100 px-2 py-0.5 text-xs font-semibold text-mint-700"
+                            ? "shrink-0 rounded-full bg-black px-2.5 py-0.5 text-xs font-semibold text-white"
+                            : "shrink-0 rounded-full border border-mint-300 bg-mint-50 px-2.5 py-0.5 text-xs font-semibold text-mint-700"
                         }
                       >
                         {e.verdict === "paid" ? `+${e.fee.toLocaleString("ko-KR")}원` : "무료"}
@@ -224,7 +241,7 @@ export default async function OwnerView({ token, project, items, requests, appro
             {timeline.length === 0 && <li className="text-sm text-neutral-500">아직 기록이 없습니다.</li>}
           </ol>
           {total > 0 && (
-            <p className="mt-4 rounded-xl border-2 border-black bg-black px-4 py-3 text-right font-semibold text-white">
+            <p className="mt-4 rounded-md bg-black px-4 py-3 text-right font-semibold text-white">
               추가 청구 합계 {total.toLocaleString("ko-KR")}원
             </p>
           )}
@@ -236,7 +253,7 @@ export default async function OwnerView({ token, project, items, requests, appro
 
 function Stat({ icon, label, value, warn }: { icon: string; label: string; value: string; warn?: boolean }) {
   return (
-    <div className={`rounded-2xl border-2 p-4 ${warn ? "border-black bg-mint-50" : "border-black bg-white shadow-[3px_3px_0_0_#000]"}`}>
+    <div className={`rounded-lg border p-4 ${warn ? "border-mint-300 bg-mint-50" : "border-neutral-200 bg-white"}`}>
       <p className="text-xs text-neutral-500">{icon} {label}</p>
       <p className="mt-1 text-lg font-semibold text-black">{value}</p>
     </div>

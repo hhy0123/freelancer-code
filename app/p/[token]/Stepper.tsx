@@ -7,21 +7,21 @@ export default function Stepper({ step }: { step: 0 | 1 | 2 }) {
         <li key={label} className="flex items-center gap-2">
           <div className="flex items-center gap-2">
             <span
-              className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-full border-2 border-black text-xs font-bold transition ${
+              className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-full text-[11px] font-semibold transition ${
                 i < step
                   ? "bg-black text-white"
                   : i === step
-                    ? "bg-mint-500 text-black ring-4 ring-mint-100"
-                    : "bg-white text-neutral-400"
+                    ? "bg-mint-600 text-white"
+                    : "border border-neutral-300 text-neutral-400"
               }`}
             >
               {i < step ? "✓" : i + 1}
             </span>
-            <span className={`text-xs font-medium ${i === step ? "text-mint-700" : "text-neutral-500"}`}>
+            <span className={`text-xs ${i === step ? "font-medium text-mint-700" : "text-neutral-400"}`}>
               {label}
             </span>
           </div>
-          {i < STEPS.length - 1 && <span className="h-px w-6 bg-neutral-300" />}
+          {i < STEPS.length - 1 && <span className="h-px w-6 bg-neutral-200" />}
         </li>
       ))}
     </ol>

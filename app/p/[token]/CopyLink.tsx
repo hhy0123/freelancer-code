@@ -17,8 +17,8 @@ export default function CopyLink({ path }: { path: string }) {
           // ponytail: 클립보드 권한 실패 시 조용히 무시, 사용자는 텍스트를 직접 복사하면 됨
         }
       }}
-      className={`shrink-0 rounded-lg border-2 border-black px-3 py-2 text-xs font-medium transition ${
-        copied ? "bg-mint-300 text-black" : "bg-white text-black hover:bg-mint-50"
+      className={`shrink-0 rounded-md border px-3 py-2 text-xs font-medium transition ${
+        copied ? "border-mint-300 bg-mint-50 text-mint-700" : "border-neutral-300 bg-white text-black hover:bg-neutral-50"
       }`}
     >
       {copied ? "복사됨" : "복사"}

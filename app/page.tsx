@@ -2,7 +2,7 @@ import { headers } from "next/headers";
 import QRCode from "qrcode";
 import { createProject } from "./actions";
 import { PRESETS } from "@/lib/presets";
-import { cardShell, cardTitleBar, cardBody, input, btnPrimary } from "@/lib/styles";
+import { pageTitle, cardShell, cardTitleBar, cardBody, eyebrowNum, input, btnPrimary } from "@/lib/styles";
 
 const DEMO_OWNER = "11111111-1111-1111-1111-111111111111";
 const DEMO_CLIENT = "22222222-2222-2222-2222-222222222222";
@@ -17,25 +17,27 @@ export default async function Home() {
 
   return (
     <main className="mx-auto max-w-2xl px-6 py-16">
-      <span className="inline-flex items-center gap-1.5 rounded-full border-2 border-black bg-mint-300 px-3 py-1 text-xs font-bold text-black">
+      <p className="text-xs font-semibold uppercase tracking-[0.2em] text-mint-600">
         🔒 확정 잠금
-      </span>
-      <h1 className="mt-3 text-3xl font-bold tracking-tight text-black">
+      </p>
+      <h1 className={`mt-3 text-4xl ${pageTitle}`}>
         어디까지가 계약 범위인가
       </h1>
-      <p className="mt-4 leading-relaxed text-neutral-700">
+      <p className="mt-4 leading-relaxed text-neutral-600">
         외주에서 돈을 못 받는 이유는 일을 못해서가 아니라, 어디까지가 일인지
         아무도 정하지 않아서입니다. 이 도구는 수정 횟수를 세지 않습니다.{" "}
-        <strong className="text-black">확정된 결정을 잠그고</strong>, 그
+        <strong className="font-medium text-black">확정된 결정을 잠그고</strong>, 그
         결정을 되돌리는 요청만 유상으로 판정합니다.
       </p>
 
-      <div className={`mt-8 ${cardShell}`}>
-        <p className={cardTitleBar}>진행 중인 프로젝트 둘러보기</p>
+      <div className={`mt-10 ${cardShell}`}>
+        <p className={cardTitleBar}>
+          <span className={eyebrowNum}>01</span> 진행 중인 프로젝트 둘러보기
+        </p>
         <div className={cardBody}>
           <p className="text-sm text-neutral-600">
-            진행 중인 프로젝트를 <strong className="text-black">작업자</strong>와{" "}
-            <strong className="text-black">클라이언트</strong> 양쪽 입장에서
+            진행 중인 프로젝트를 <strong className="font-medium text-black">작업자</strong>와{" "}
+            <strong className="font-medium text-black">클라이언트</strong> 양쪽 입장에서
             미리 채워진 데이터로 둘러볼 수 있습니다. 이 도구는 둘 중 한쪽만을 위한 게 아닙니다.
           </p>
           <div className="mt-4 grid grid-cols-2 gap-3">
@@ -45,29 +47,33 @@ export default async function Home() {
         </div>
       </div>
 
-      <ol className="mt-8 grid gap-3 sm:grid-cols-3">
+      <ol className="mt-10 grid gap-3 sm:grid-cols-3">
         <HowStep n={1} title="항목을 확정한다" desc="클라이언트가 체크리스트를 채운다" />
         <HowStep n={2} title="승인하면 잠긴다" desc="채워진 항목이 그 순간 잠긴다" />
         <HowStep n={3} title="번복은 유상" desc="잠긴 항목 변경만 자동으로 청구된다" />
       </ol>
 
-      <div className={`mt-8 ${cardShell}`}>
-        <p className={cardTitleBar}>예시 판정</p>
+      <div className={`mt-10 ${cardShell}`}>
+        <p className={cardTitleBar}>
+          <span className={eyebrowNum}>02</span> 예시 판정
+        </p>
         <div className={cardBody}>
-          <p className="text-sm text-neutral-800">
+          <p className="text-sm text-neutral-700">
             &quot;지원 브라우저&quot;는 9월 20일 1차 검수에서 이미 승인·잠금됨
           </p>
-          <div className="mt-2 flex items-center justify-between rounded-lg border-2 border-black bg-mint-50 px-3 py-2 text-sm">
-            <span className="text-neutral-700">“역시 IE11도 지원해주세요”</span>
-            <span className="rounded-md border-2 border-black bg-black px-2 py-0.5 font-semibold text-white">
+          <div className="mt-3 flex items-center justify-between rounded-md border border-neutral-200 bg-neutral-50 px-4 py-2.5 text-sm">
+            <span className="text-neutral-600">“역시 IE11도 지원해주세요”</span>
+            <span className="rounded-full bg-black px-2.5 py-1 text-xs font-semibold text-white">
               +50,000원
             </span>
           </div>
         </div>
       </div>
 
-      <div className={`mt-8 ${cardShell}`}>
-        <p className={cardTitleBar}>프로젝트 만들기</p>
+      <div className={`mt-10 ${cardShell}`}>
+        <p className={cardTitleBar}>
+          <span className={eyebrowNum}>03</span> 프로젝트 만들기
+        </p>
         <form action={createProject} className={`${cardBody} space-y-4`}>
           <Field label="프로젝트명">
             <input name="title" required placeholder="○○ 쇼핑몰 리뉴얼" className={input} />
@@ -104,13 +110,13 @@ function DemoLink({ href, qr, icon, label }: { href: string; qr: string; icon: s
     <a
       href={href}
       target="_blank"
-      className="flex items-center gap-3 rounded-xl border-2 border-black bg-white p-3 transition hover:bg-mint-50"
+      className="flex items-center gap-3 rounded-md border border-neutral-200 bg-white p-3 transition hover:border-mint-300 hover:bg-mint-50/50"
     >
       {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img src={qr} alt={`${label} QR 코드`} width={56} height={56} className="rounded border border-black" />
+      <img src={qr} alt={`${label} QR 코드`} width={52} height={52} className="rounded border border-neutral-200" />
       <span>
-        <span className="block text-sm font-semibold text-black">{icon} {label}</span>
-        <span className="text-xs text-mint-700">클릭 또는 스캔 →</span>
+        <span className="block text-sm font-medium text-black">{icon} {label}</span>
+        <span className="text-xs text-mint-600">클릭 또는 스캔 →</span>
       </span>
     </a>
   );
@@ -118,11 +124,9 @@ function DemoLink({ href, qr, icon, label }: { href: string; qr: string; icon: s
 
 function HowStep({ n, title, desc }: { n: number; title: string; desc: string }) {
   return (
-    <li className="rounded-xl border-2 border-black bg-white p-4 shadow-[3px_3px_0_0_#000]">
-      <span className="flex h-6 w-6 items-center justify-center rounded-full border-2 border-black bg-mint-300 text-xs font-bold text-black">
-        {n}
-      </span>
-      <p className="mt-2 text-sm font-semibold text-black">{title}</p>
+    <li className="rounded-lg border border-neutral-200 bg-white p-4">
+      <span className={`text-xl ${eyebrowNum}`}>0{n}</span>
+      <p className="mt-1.5 text-sm font-semibold text-black">{title}</p>
       <p className="mt-0.5 text-xs text-neutral-500">{desc}</p>
     </li>
   );
