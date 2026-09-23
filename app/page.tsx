@@ -31,7 +31,7 @@ export default async function Home() {
       </p>
 
       <div className={`mt-8 ${card} border-indigo-100 bg-indigo-50/40`}>
-        <p className="text-xs font-semibold uppercase tracking-wide text-indigo-700">데모 바로 보기</p>
+        <p className="text-xs font-semibold uppercase tracking-wide text-indigo-700">진행 중인 프로젝트 둘러보기</p>
         <p className="mt-1 text-sm text-neutral-600">
           진행 중인 프로젝트를 <strong>작업자</strong>와 <strong>클라이언트</strong> 양쪽 입장에서
           미리 채워진 데이터로 둘러볼 수 있습니다. 이 도구는 둘 중 한쪽만을 위한 게 아닙니다.
