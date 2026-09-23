@@ -25,3 +25,11 @@ select '33333333-3333-3333-3333-333333333333', id,
        '‘인수인계 형태 (문서/코드/교육)’은(는) 아직 확정되지 않은 항목입니다. 작업 전에 확인하지 않은 쪽의 책임이므로 무료입니다.',
        0, now() - interval '3 days'
 from spec_item where project_id = '33333333-3333-3333-3333-333333333333' and sort = 4;
+
+-- 클릭 없이 화면만 가리켜도 되도록, 유상 판정 예시도 미리 넣어둔다.
+insert into request (project_id, spec_item_id, body, verdict, reason, fee, created_at)
+select '33333333-3333-3333-3333-333333333333', id,
+       '역시 IE11도 지원해주세요', 'paid',
+       '‘지원 브라우저·기기’은(는) 9월 11일 1차 검수 단계에서 클라이언트가 직접 확정한 항목입니다. 이미 정한 걸 다시 바꾸자는 요청입니다.',
+       50000, now() - interval '20 hours'
+from spec_item where project_id = '33333333-3333-3333-3333-333333333333' and sort = 1;
