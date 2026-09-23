@@ -44,7 +44,7 @@ export default function ClientView({ token, project, items, requests, approvals,
           <h1 className={`text-2xl ${pageTitle}`}>{project.title}</h1>
         </div>
         <span className="shrink-0 text-xs font-semibold uppercase tracking-wider text-blue-600">
-          🔓 확정 잠금 진행 중
+          🔓 Fix 진행 중
         </span>
       </div>
 

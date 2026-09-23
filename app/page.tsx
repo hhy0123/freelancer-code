@@ -17,7 +17,7 @@ export default async function Home() {
 
   return (
     <main className="mx-auto max-w-2xl px-6 py-16">
-      <h1 className={`text-4xl ${pageTitle}`}>🔒 확정 잠금</h1>
+      <h1 className={`text-4xl ${pageTitle}`}>🔒 Fix</h1>
       <p className={`mt-1 text-xl ${scriptAccent}`}>사람이 말하지 않아도, 화면이 먼저 말해요</p>
 
       <div className={`mt-10 ${cardShell}`}>

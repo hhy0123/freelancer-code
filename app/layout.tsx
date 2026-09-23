@@ -27,7 +27,7 @@ const nanumPenScript = Nanum_Pen_Script({
 });
 
 export const metadata: Metadata = {
-  title: "확정 잠금 — 외주 계약 범위 판정",
+  title: "Fix — 외주 계약 범위 판정",
   description: "수정 횟수를 세지 않는다. 확정된 결정을 잠그고, 되돌리는 요청만 유상으로 판정한다.",
 };
 
