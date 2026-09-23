@@ -1,3 +1,5 @@
+import { headers } from "next/headers";
+import QRCode from "qrcode";
 import type { SpecItem } from "@/lib/judge";
 import { card, input, btnPrimary, badgeLocked, badgeWarn, badgeOk } from "@/lib/styles";
 import CopyLink from "./CopyLink";
@@ -16,7 +18,13 @@ type TimelineEvent =
   | { kind: "approval"; at: string; id: string; stage: string; triggeredBy: string }
   | { kind: "request"; at: string; id: string; body: string; verdict: string; reason: string; fee: number };
 
-export default function OwnerView({ token, project, items, requests, approvals, freeUsed }: Props) {
+export default async function OwnerView({ token, project, items, requests, approvals, freeUsed }: Props) {
+  const h = await headers();
+  const proto = h.get("x-forwarded-proto") ?? "http";
+  const host = h.get("host");
+  const clientUrl = `${proto}://${host}/p/${project.client_token}`;
+  const clientQr = await QRCode.toDataURL(clientUrl, { margin: 1, width: 176 });
+
   const undecided = items.filter((i) => !i.value.trim());
   const unlocked = items.filter((i) => !i.locked_at);
   const billed = requests.filter((r) => r.verdict === "paid");
@@ -69,21 +77,28 @@ export default function OwnerView({ token, project, items, requests, approvals, 
         </div>
       </div>
 
-      <div className={`mt-4 ${card}`}>
-        <p className="text-sm font-medium">클라이언트에게 보낼 링크</p>
-        <div className="mt-2 flex items-center gap-2">
-          <code className="flex-1 break-all rounded-lg bg-neutral-100 px-3 py-2 text-xs">
-            /p/{project.client_token}
-          </code>
-          <CopyLink path={`/p/${project.client_token}`} />
+      <div className={`mt-4 ${card} flex flex-col gap-4 sm:flex-row sm:items-start`}>
+        <div className="flex-1">
+          <p className="text-sm font-medium">클라이언트에게 보낼 링크</p>
+          <div className="mt-2 flex items-center gap-2">
+            <code className="flex-1 break-all rounded-lg bg-neutral-100 px-3 py-2 text-xs">
+              /p/{project.client_token}
+            </code>
+            <CopyLink path={`/p/${project.client_token}`} />
+          </div>
+          <a
+            href={`/p/${project.client_token}`}
+            target="_blank"
+            className="mt-2 inline-block text-sm font-medium text-indigo-600 hover:underline"
+          >
+            클라이언트 화면 열기 →
+          </a>
         </div>
-        <a
-          href={`/p/${project.client_token}`}
-          target="_blank"
-          className="mt-2 inline-block text-sm font-medium text-indigo-600 hover:underline"
-        >
-          클라이언트 화면 열기 →
-        </a>
+        <div className="flex shrink-0 flex-col items-center gap-1 self-center">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src={clientQr} alt="클라이언트 화면 QR 코드" width={110} height={110} className="rounded-lg border border-neutral-200" />
+          <p className="text-[11px] text-neutral-400">스캔해서 바로 전달</p>
+        </div>
       </div>
 
       <div className="mt-5 grid grid-cols-3 gap-3">
