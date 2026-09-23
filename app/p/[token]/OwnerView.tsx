@@ -45,7 +45,23 @@ export default function OwnerView({ project, items, requests, approvals, freeUse
         </span>
       </div>
 
-      <div className={`mt-5 ${card}`}>
+      <div className="mt-5 flex items-start gap-3 rounded-2xl border border-amber-300 bg-amber-50 p-4 text-sm text-amber-900">
+        <span className="text-lg leading-none">⚠️</span>
+        <div className="flex-1">
+          <p className="font-semibold">이 페이지 링크를 반드시 저장하세요</p>
+          <p className="mt-0.5 text-amber-800">
+            로그인이 없어서 이 URL을 잃어버리면 이 프로젝트로 다시 돌아올 방법이 없습니다.
+          </p>
+          <div className="mt-2 flex items-center gap-2">
+            <code className="flex-1 break-all rounded-lg bg-white px-3 py-2 text-xs">
+              /p/{project.owner_token}
+            </code>
+            <CopyLink path={`/p/${project.owner_token}`} />
+          </div>
+        </div>
+      </div>
+
+      <div className={`mt-4 ${card}`}>
         <p className="text-sm font-medium">클라이언트에게 보낼 링크</p>
         <div className="mt-2 flex items-center gap-2">
           <code className="flex-1 break-all rounded-lg bg-neutral-100 px-3 py-2 text-xs">
